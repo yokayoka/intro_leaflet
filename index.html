@@ -1,15 +1,147 @@
-<p><a href=shared/daimaru.html>大丸サンプル</a></p>
-<p><a href=shared/p2492001.html>p2492001</a></p>
-<p><a href=shared/p2270020.html>p2270020</a></p>
-<p><a href=shared/p2492004.html>p2492004</a></p>
-<p><a href=shared/p2492002.html>p2492002</a></p>
-<p><a href=shared/p2592001.html>p2592001</a></p>
-<p><a href=shared/p2592007.html>p2592007</a></p>
-<p><a href=shared/p2592005.html>p2592005</a></p>
-<p><a href=shared/p2592006.html>p2592006</a></p>
-<p><a href=shared/p2492003.html>p2492003</a></p>
-<p><a href=shared/p2592004.html>p2592004</a></p>
-<p><a href=shared/p2592002.html>p2592002</a></p>
-<p><a href=shared/p2592003.html>p2592003</a></p>
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <title>屋外実習リンク集</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    /* ベース: 屋外用に文字大きめ＆高コントラスト */
+    :root {
+      --bg: #fff;
+      --fg: #111;
+      --accent: #0d6efd; /* 押せる感のある青 */
+      --muted: #666;
+      --card-bg: #f7f7f7;
+      --radius: 14px;
+      --shadow: 0 4px 16px rgba(0,0,0,0.10);
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0e0f12;
+        --fg: #f4f6fb;
+        --accent: #7bb7ff;
+        --muted: #b6bdc9;
+        --card-bg: #1a1c22;
+        --shadow: 0 6px 18px rgba(0,0,0,0.35);
+      }
+    }
+    html, body { height: 100%; }
+    html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+    body {
+      margin: 0; background: var(--bg); color: var(--fg);
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Noto Sans JP", "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
+      line-height: 1.4; font-size: 18px; /* ←スマホで見やすい大きさ */
+    }
 
+    /* 固定ヘッダー（屋外で迷子にならない） */
+    header {
+      position: sticky; top: 0; z-index: 10;
+      background: var(--bg); border-bottom: 1px solid rgba(0,0,0,.07);
+      padding: 12px 16px;
+    }
+    .title { font-size: 1.25rem; font-weight: 700; margin: 0 0 8px; }
+    .hint  { margin: 0; color: var(--muted); font-size: .95rem; }
 
+    /* 検索ボックス（学籍番号・名前などで絞り込み） */
+    .search {
+      display: flex; gap: 8px; margin-top: 10px;
+    }
+    .search input {
+      flex: 1; font-size: 1.1rem; padding: 12px 14px;
+      border-radius: 12px; border: 1px solid rgba(0,0,0,.15); background: var(--card-bg); color: var(--fg);
+      outline: none;
+    }
+    .search input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(13,110,253,.15); }
+
+    main { padding: 14px 12px 24px; }
+
+    /* でかボタン化（タップ領域48px以上 / WCAG推奨） */
+    .list { display: grid; gap: 12px; }
+    @media (min-width: 560px) {
+      .list { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (min-width: 900px) {
+      .list { grid-template-columns: repeat(3, 1fr); }
+      body { font-size: 19px; }
+    }
+
+    .list p { margin: 0; } /* 既存<p>をそのまま使う */
+    .list a {
+      display: block;
+      text-decoration: none;
+      background: var(--card-bg);
+      color: var(--fg);
+      padding: 16px 18px; /* 指で押しやすい */
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(0,0,0,.06);
+      font-weight: 700;
+      font-size: 1.15rem; /* 文字大きめ */
+      letter-spacing: 0.2px;
+      touch-action: manipulation; /* モバイル反応改善 */
+    }
+    .list a:active { transform: translateY(1px); }
+    .badge {
+      display: inline-block; margin-left: 8px; font-weight: 600;
+      font-size: .9rem; color: var(--muted);
+    }
+
+    footer { text-align: center; color: var(--muted); padding: 18px 10px 30px; font-size: .95rem; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1 class="title">屋外実習リンク集（スマホ用）</h1>
+    <p class="hint">タップで各自のWeb地図を開きます。上の検索で学籍番号（pから始まる7桁）を入力すると絞り込めます。</p>
+    <div class="search">
+      <input id="q" type="search" placeholder="例）p2492001 / 名前 / サンプル で検索" aria-label="参加者検索">
+    </div>
+  </header>
+
+  <main>
+    <!-- ★ あなたの既存リンクをこの .list の中にそのまま置きます -->
+    <div id="list" class="list">
+      <p><a href="shared/daimaru.html">大丸サンプル<span class="badge">sample</span></a></p>
+      <p><a href="shared/p2492001.html">p2492001</a></p>
+      <p><a href="shared/p2270020.html">p2270020</a></p>
+      <p><a href="shared/p2492004.html">p2492004</a></p>
+      <p><a href="shared/p2492002.html">p2492002</a></p>
+      <p><a href="shared/p2592001.html">p2592001</a></p>
+      <p><a href="shared/p2592007.html">p2592007</a></p>
+      <p><a href="shared/p2592005.html">p2592005</a></p>
+      <p><a href="shared/p2592006.html">p2592006</a></p>
+      <p><a href="shared/p2492003.html">p2492003</a></p>
+      <p><a href="shared/p2592004.html">p2592004</a></p>
+      <p><a href="shared/p2592002.html">p2592002</a></p>
+      <p><a href="shared/p2592003.html">p2592003</a></p>
+    </div>
+  </main>
+
+  <footer>※ 屋外では電波状況が不安定な場合があります。開けないときは時間をおいて再試行してください。</footer>
+
+  <script>
+    // 検索（部分一致でフィルタ）
+    const q = document.getElementById('q');
+    const list = document.getElementById('list');
+    q.addEventListener('input', () => {
+      const word = q.value.trim().toLowerCase();
+      // 既存<p>をそのまま利用
+      const items = list.querySelectorAll('p');
+      items.forEach(p => {
+        const txt = p.textContent.toLowerCase();
+        p.style.display = txt.includes(word) ? '' : 'none';
+      });
+    });
+
+    // スクロール保持：戻った時に位置を覚えておく（モバイル操作のストレス軽減）
+    if ('scrollRestoration' in history) {
+      history.scrollRestoration = 'manual';
+      const y = sessionStorage.getItem('scrollY');
+      if (y) window.scrollTo(0, +y);
+      window.addEventListener('beforeunload', () => {
+        sessionStorage.setItem('scrollY', String(window.scrollY));
+      });
+    }
+  </script>
+</body>
+</html>
