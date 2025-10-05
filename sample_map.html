@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <title>Leaflet入門：好みの地図でカスタマイズ</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- Leaflet CDN -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""
+  />
+  <style>
+    html, body, #map { height: 100%; margin: 0; }
+    /* パネルを右上に（デフォルト） */
+    .leaflet-top.leaflet-right .leaflet-control-layers {
+      max-height: 70vh; overflow:auto;
+    }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+
+  <script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin="">
+  </script>
+  <script>
+    // ==== 初期表示（必要ならURLで ?lat=…&lng=…&z=… 指定も可） ====
+    const qs = new URLSearchParams(location.search);
+    const lat = parseFloat(qs.get('lat') ?? qs.get('y') ?? '36.561');   // 金沢付近
+    const lng = parseFloat(qs.get('lng') ?? qs.get('x') ?? '136.656');
+    const z   = parseInt(qs.get('z') ?? '10', 10);
+
+    const map = L.map('map', { center: [lat, lng], zoom: z });
+
+    // ==== ベースマップ（好きなのを選んで楽しむ） ====
+    const gsiStd  = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png', {
+      maxZoom: 18, attribution: '地理院タイル'
+    });
+    const gsiPale = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png', {
+      maxZoom: 18, attribution: '地理院タイル'
+    });
+    const gsiRelief = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/relief/{z}/{x}/{y}.png', {
+      maxZoom: 15, attribution: '地理院タイル（色別標高図）'
+    });
+    const osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19, attribution: '&copy; OpenStreetMap contributors'
+    });
+
+    // 初期ベース
+    gsiStd.addTo(map);
+
+    const baseLayers = {
+      "GSI 標準地図": gsiStd,
+      "GSI 淡色地図": gsiPale,
+      "GSI 色別標高図": gsiRelief,
+      "OpenStreetMap": osm
+    };
+
+    // ==== オーバーレイ（重ねると表現が変わって面白い） ====
+    // 陰影起伏図（地形の陰影）
+    const gsiHillshade = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/hillshademap/{z}/{x}/{y}.png', {
+      maxZoom: 16, opacity: 0.7, attribution: '地理院タイル（陰影起伏図）'
+    });
+
+    // 注記（地名ラベル）— 航空写真や色別標高図の上に重ねると便利
+    const gsiLabel = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/label/{z}/{x}/{y}.png', {
+      maxZoom: 18, opacity: 0.9, attribution: '地理院タイル（注記）'
+    });
+
+    const overlays = {
+      "陰影起伏図（重ねがけ）": gsiHillshade,
+      "注記（地名ラベル）": gsiLabel
+    };
+
+    // 右上パネル（デフォルト top-right）
+    L.control.layers(baseLayers, overlays, { collapsed: false, position: 'topright' }).addTo(map);
+
+    // 縮尺
+    L.control.scale({ imperial: false }).addTo(map);
+  </script>
+</body>
+</html>
