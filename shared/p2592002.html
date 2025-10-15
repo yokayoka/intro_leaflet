@@ -77,7 +77,7 @@
     
     // 1980th phote
     const gsiHillshade = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/ort_old10/{z}/{x}/{y}.png', {
-      maxZoom: 16, opacity: 0.7, attribution: '地理院タイル（陰影起伏図）'
+      maxZoom: 16, opacity: 1, attribution: '地理院タイル（陰影起伏図）'
     });
 
     // color map
@@ -104,11 +104,11 @@
 
     // オーバーレイのグループを定義
     const overlays = {
-      "むかしのしゃしん": gsiHillshade,
+      "1960th": gsiHillshade,
       "注記（地名ラベル）": gsiLabel,
-      "なんか色つくやつ"  :colormap,
-      "しろーいやつ"  　　:gorstmap,
-      "やまっぽいやつ"      :kimomap
+      "色別標高図"  :colormap,
+      "県単位"  　　:gorstmap,
+      "全国傾斜量区分図"      :kimomap
 
     };
 

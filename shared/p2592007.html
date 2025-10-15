@@ -80,6 +80,12 @@
       maxZoom: 16, opacity: 0.7, attribution: '地理院タイル（陰影起伏図）'
     });
 
+    // 1960th photo
+    extmap2 = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/ort_old10/{z}/{x}/{y}.png', {
+      maxZoom: 16, opacity: 0.7, attribution: '地理院タイル（陰影起伏図）'
+    });
+
+
     // 注記（地名ラベル）— 航空写真や色別標高図の上に重ねると便利
     const gsiLabel = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/label/{z}/{x}/{y}.png', {
       maxZoom: 18, opacity: 0.9, attribution: '地理院タイル（注記）'
@@ -104,6 +110,7 @@
     const overlays = {
       "外部地図（重ねがけ）": gsiHillshade,
 　　　"1945年代（重ねがけ）": extmap,
+　　　"1960年代（重ねがけ）": extmap2,　
       "色別標高図": colormap,
       "活断層図": katudan,
       "土地条件図": tochijyouken,

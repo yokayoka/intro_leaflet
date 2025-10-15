@@ -96,10 +96,6 @@ const favorite_gsi_map2 = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/seam
  maxZoom: 18,  opacity: 0.8,
  attribution: '地理院タイル（全国最新写真（シームレス））'});
 
-//1970年代写真
-const favorite_gsi_map3 = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/gazo1/{z}/{x}/{y}.jpg',{
- maxZoom: 17,  opacity: 0.8,
- attribution: '地理院タイル（1970年代空中写真）'});
 
 //色別標高図URL：https://cyberjapandata.gsi.go.jp/xyz/relief/{z}/{x}/{y}.png
 //数値地図25000（土地条件）URL：https://cyberjapandata.gsi.go.jp/xyz/lcm25k_2012/{z}/{x}/{y}.png
@@ -119,8 +115,7 @@ const favorite_gsi_map3 = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/gazo
       "陰影起伏図（重ねがけ）": gsiHillshade,
      
       "色別標高図（重ねがけ）": favorite_gsi_map,
-　　　"全国最新写真（シームレス）（重ねがけ）": favorite_gsi_map2, 
-      "1970年代空中写真（重ねがけ）": favorite_gsi_map3　
+　　　"全国最新写真（シームレス）（重ねがけ）": favorite_gsi_map2, 　
     };
 
     // レイヤーコントロールを追加

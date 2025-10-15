@@ -75,6 +75,13 @@
       maxZoom: 16, opacity: 0.7, attribution: '地理院タイル（陰影起伏図）'
     });
 
+    // ==== オーバーレイ（重ねると表現が変わって面白い） ====
+    // 1960年代の写真
+    const ort1960th = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/ort_old10/{z}/{x}/{y}.png', {
+      maxZoom: 16, opacity: 1, attribution: '地理院タイル（1960年代写真）'
+    });
+
+
     // 注記（地名ラベル）— 航空写真や色別標高図の上に重ねると便利
     const gsiLabel = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/label/{z}/{x}/{y}.png', {
       maxZoom: 18, opacity: 0.9, attribution: '地理院タイル（注記）'
@@ -85,6 +92,7 @@
     // オーバーレイのグループを定義
     const overlays = {
       "陰影起伏図（重ねがけ）": gsiHillshade,
+      "1960年代写真": ort1960th,
       "注記（地名ラベル）": gsiLabel
     };
 
