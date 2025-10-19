@@ -138,49 +138,10 @@
     map.addControl(new LocateControl());
 
     addEventListener('orientationchange', () => setTimeout(() => map.invalidateSize(), 250));
-    addEventListener('resize', () => setTimeout(() => map.invalidateSize(), 250));
-
-    // ポイントを表示するスクリプト
-    // ここからを追加
-var myPoints = {
-    "type": "FeatureCollection",
-    "features": [
-      {
-        "type": "Feature",
-        "properties": {
-          "popupContent": "<p>野々市駅</p>"
-        },
-        "geometry": {
-          "type": "Point",
-          "coordinates": [136.59813, 36.54193]
-        }
-      },{
-        "type": "Feature",
-        "properties": {
-          "popupContent": "<p>金沢駅</p>"
-        },
-        "geometry": {
-          "type": "Point",
-          "coordinates": [136.64851, 36.57895]
-        }
-      }
-    ]
-  };
-  
-  L.geoJSON(myPoints, 
-    {
-      onEachFeature: function onEachFeature(
-        feature,
-        layer
-      ){
-        if(feature.properties && feature.properties.popupContent){
-          layer.bindPopup(feature.properties.popupContent);
-        }
-      }
-    }
-  ).addTo(map);
-    // ポイントを表示するスクリプト
-    // ここまでを追加
+    addEventListener('resize', () => setTimeout(() => map.invalidateSize(), 250)); 
 </script>
+
+<script src="src/daimaru.js"></script>
+
 </body>
 </html>
