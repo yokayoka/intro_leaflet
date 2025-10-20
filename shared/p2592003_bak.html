@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -27,7 +28,7 @@
   <script>
     // --- 既定値（パラメータが無いとき用） ---
     // 最初の位置を指定してください
-    const ini = { lat: 36.35885, lng: 136.62459, zoom: 15 };
+    const ini = { lat: 36.50839, lng: 136.59878, zoom: 15 };
     // URLパラメータで上書き: ?y=<lat>&x=<lng>&z=<zoom>
     (function applyUrlCenter() {
       const p = new URLSearchParams(location.search);
@@ -71,20 +72,8 @@
 
     // ==== オーバーレイ（重ねると表現が変わって面白い） ====
     // 陰影起伏図（地形の陰影）
-    const gsiHillshade = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/hillshademap/{z}/{x}/{y}.png', {
+    const gsiHillshade = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/ort_old10/{z}/{x}/{y}.png', {
       maxZoom: 16, opacity: 0.7, attribution: '地理院タイル（陰影起伏図）'
-    });
-
- Hyoko = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png', {
-      maxZoom: 16, opacity: 0.7, attribution: '地理院タイル（陰影起伏図）'
-    });
-
- Syokusei = L.tileLayer('https://map.ecoris.info/tiles/vege/{z}/{x}/{y}.png', {
-      maxZoom: 16, opacity: 0.7, attribution: '地理院タイル（陰影起伏図）'
-    });
-
-Nendai = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/ort_old10/{z}/{x}/{y}.png', {
-      maxZoom: 16, opacity: 0.9, attribution: '地理院タイル（陰影起伏図）'
     });
 
     // 注記（地名ラベル）— 航空写真や色別標高図の上に重ねると便利
@@ -96,10 +85,7 @@ Nendai = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/ort_old10/{z}/{x}/{y}
 
     // オーバーレイのグループを定義
     const overlays = {
-      "陰影起伏図（重ねがけ）": gsiHillshade,
-	"標高地図": Hyoko,
-	"植生図": Syokusei,
-	"1961年から1969年の空中写真": Nendai,
+      "1960年代": gsiHillshade,
       "注記（地名ラベル）": gsiLabel
     };
 
@@ -146,79 +132,6 @@ Nendai = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/ort_old10/{z}/{x}/{y}
 
     addEventListener('orientationchange', () => setTimeout(() => map.invalidateSize(), 250));
     addEventListener('resize', () => setTimeout(() => map.invalidateSize(), 250));
- var myPoints = {
-    "type": "FeatureCollection",
-    "features": [
-      {
-        "type": "Feature",
-        "properties": {
-          "popupContent": "<p>野々市駅</p>"
-        },
-        "geometry": {
-          "type": "Point",
-          "coordinates": [136.59813, 36.54193]
-        }
-      },{
-        "type": "Feature",
-        "properties": {
-          "popupContent": "<p>金沢駅</p>"
-        },
-        "geometry": {
-          "type": "Point",
-          "coordinates": [136.64851, 36.57895]
-        }
-      },{
-        "type": "Feature",
-        "properties": {
-          "popupContent": "<p>上吉野</p>"
-        },
-        "geometry": {
-          "type": "Point",
-          "coordinates": [136.62459, 36.35885]
-        }
-      },{
-        "type": "Feature",
-        "properties": {
-          "popupContent": "<p>下吉野</p>"
-        },
-        "geometry": {
-          "type": "Point",
-          "coordinates": [136.62648, 36.35185]
-        }
-      },{
-        "type": "Feature",
-        "properties": {
-          "popupContent": "<p>スギノコ_佐良</p>"
-        },
-        "geometry": {
-          "type": "Point",
-          "coordinates": [136.64341, 36.3295]
-        }
-      },{
-        "type": "Feature",
-        "properties": {
-          "popupContent": "<p>中島町</p>"
-        },
-        "geometry": {
-          "type": "Point",
-          "coordinates": [136.63404, 36.415]
-        }
-      }
-    ]
-  };
- 
-  L.geoJSON(myPoints,
-    {
-      onEachFeature: function onEachFeature(
-        feature,
-        layer
-      ){
-        if(feature.properties && feature.properties.popupContent){
-          layer.bindPopup(feature.properties.popupContent);
-        }
-      }
-    }
-  ).addTo(map);
- </script>
+  </script>
 </body>
 </html>

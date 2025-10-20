@@ -27,7 +27,7 @@
   <script>
     // --- 既定値（パラメータが無いとき用） ---
     // 最初の位置を指定してください
-    const ini = { lat: 36.45742, lng: 137.02638, zoom: 13 };
+    const ini = { lat: 36.45742, lng: 137.02638, zoom: 15 };
     // URLパラメータで上書き: ?y=<lat>&x=<lng>&z=<zoom>
     (function applyUrlCenter() {
       const p = new URLSearchParams(location.search);
@@ -166,133 +166,6 @@ const favorite_gsi_map3 = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/gazo
 
     addEventListener('orientationchange', () => setTimeout(() => map.invalidateSize(), 250));
     addEventListener('resize', () => setTimeout(() => map.invalidateSize(), 250));
-  var myPoints = {
-    "type": "FeatureCollection",
-    "features": [
-      {
-        "type": "Feature",
-        "properties": {
-          "popupContent": "<p>南砺市利賀市民センター</p>"
-        },
-        "geometry": {
-          "type": "Point",
-          "coordinates": [137.0262, 36.4575]
-        }
-      },{
-        "type": "Feature",
-        "properties": {
-          "popupContent": "<p>瞑想の郷</p>"
-        },
-        "geometry": {
-          "type": "Point",
-          "coordinates": [137.0157, 36.4345]
-        }
-      },{
-        "type": "Feature",
-        "properties": {
-          "popupContent": "<p>利賀国際キャンプ場グルメ館</p>"
-        },
-        "geometry": {
-          "type": "Point",
-          "coordinates": [137.0405, 36.4405]
-        }
-      },{
-        "type": "Feature",
-        "properties": {
-          "popupContent": "<p>富山県利賀芸術公園</p>"
-        },
-        "geometry": {
-          "type": "Point",
-          "coordinates": [137.0428, 36.4327]
-        }
-      },{
-        "type": "Feature",
-        "properties": {
-          "popupContent": "<p>そばの郷</p>"
-        },
-        "geometry": {
-          "type": "Point",
-          "coordinates": [137.0044, 36.4212]
-        }
-      },{
-        "type": "Feature",
-        "properties": {
-          "popupContent": "<p>南砺市立複合教育施設「アーパス」</p>"
-        },
-        "geometry": {
-          "type": "Point",
-          "coordinates": [137.0296, 36.4561]
-        }
-      },{
-        "type": "Feature",
-        "properties": {
-          "popupContent": "<p>スターフォレスト利賀</p>"
-        },
-        "geometry": {
-          "type": "Point",
-          "coordinates": [137.0057, 36.4306]
-        }
-      },{
-        "type": "Feature",
-        "properties": {
-          "popupContent": "<p>利賀川の砂防・遊砂地</p>"
-        },
-        "geometry": {
-          "type": "Point",
-          "coordinates": [137.0053, 36.4305]
-        }
-      },{
-        "type": "Feature",
-        "properties": {
-          "popupContent": "<p>慶應義塾大学三田キャンパス</p>"
-        },
-        "geometry": {
-          "type": "Point",
-          "coordinates": [139.7424, 35.6513]
-        }
-      },{
-        "type": "Feature",
-        "properties": {
-          "popupContent": "<p>武蔵野市役所</p>"
-        },
-        "geometry": {
-          "type": "Point",
-          "coordinates": [139.5655, 35.7193]
-        }
-      },{
-        "type": "Feature",
-        "properties": {
-          "popupContent": "<p>大韓民国平昌郡</p>"
-        },
-        "geometry": {
-          "type": "Point",
-          "coordinates": [128.3943, 37.3832]
-        }
-      },{
-        "type": "Feature",
-        "properties": {
-          "popupContent": "<p>ギリシャデルフィ市</p>"
-        },
-        "geometry": {
-          "type": "Point",
-          "coordinates": [22.5005, 38.5069]
-        }
-      }
-    ]
-  };
- 
-  L.geoJSON(myPoints,
-    {
-      onEachFeature: function onEachFeature(
-        feature,
-        layer
-      ){
-        if(feature.properties && feature.properties.popupContent){
-          layer.bindPopup(feature.properties.popupContent);
-        }
-      }
-    }
-  ).addTo(map);
   </script>
 </body>
 </html>

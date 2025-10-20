@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>富山県南砺市マップ（レイヤー参照＋現在地表示・モバイル対応）</title>
+  <title>能登半島マップ（レイヤー参照＋現在地表示・モバイル対応）</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
 
@@ -27,7 +27,7 @@
   <script>
     // --- 既定値（パラメータが無いとき用） ---
     // 最初の位置を指定してください
-    const ini = { lat: 36.45742, lng: 137.02638, zoom: 13 };
+    const ini = { lat: 36.50839, lng: 136.59878, zoom: 15 };
     // URLパラメータで上書き: ?y=<lat>&x=<lng>&z=<zoom>
     (function applyUrlCenter() {
       const p = new URLSearchParams(location.search);
@@ -40,8 +40,6 @@
       }
       if (Number.isFinite(z)) ini.zoom = Math.min(19, Math.max(4, z));
     })();
-
-//道の駅利賀の緯度・経度（36.457429701543504, 137.02638008315867）
 
     // ---- 地図本体（※初期化は1回だけ）----
     const map = L.map('map', {
@@ -59,22 +57,16 @@
     // 地理院地図のアドレスを指定
     const lyrGSI = L.tileLayer(
       "https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png", {
-        attribution: "<a href='https://maps.gsi.go.jp/development/ichiran.html' target='_blank'>地理院地図</a>" 
+        attribution: "<a href='https://maps.gsi.go.jp/development/ichiran.html' target='_blank'>地理院タイル</a>" 
     }).addTo(map);
 
     // Google 高解像度のアドレスを指定
     const lyrGoogleHybrid = L.tileLayer("https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}");
 
-    // OpenStreetMap
-    const osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: 'OpenStreetMap'
-    });
-
     // ベースマップのグループを定義
     const baseMaps = {
       "地理院地図": lyrGSI,
       "Google高解像度（地震前）": lyrGoogleHybrid,
-      "OpenStreetMap": osm
     };
 
     // ==== オーバーレイ（重ねると表現が変わって面白い） ====
@@ -83,28 +75,17 @@
       maxZoom: 16, opacity: 0.7, attribution: '地理院タイル（陰影起伏図）'
     });
 
- 
+ Hyoko = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png', {
+      maxZoom: 16, opacity: 0.7, attribution: '地理院タイル（陰影起伏図）'
+    });
 
+ Syokusei = L.tileLayer('https://map.ecoris.info/tiles/vege/{z}/{x}/{y}.png', {
+      maxZoom: 16, opacity: 0.7, attribution: '地理院タイル（陰影起伏図）'
+    });
 
-//色別標高図
-const favorite_gsi_map = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/relief/{z}/{x}/{y}.png',{
- maxZoom: 15,  opacity: 0.7,
- attribution: '地理院タイル（色別標高図）'});
-
-//全国最新写真（シームレス）
-const favorite_gsi_map2 = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/seamlessphoto/{z}/{x}/{y}.jpg',{
- maxZoom: 18,  opacity: 0.8,
- attribution: '地理院タイル（全国最新写真（シームレス））'});
-
-//1970年代写真
-const favorite_gsi_map3 = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/gazo1/{z}/{x}/{y}.jpg',{
- maxZoom: 17,  opacity: 0.8,
- attribution: '地理院タイル（1970年代空中写真）'});
-
-//色別標高図URL：https://cyberjapandata.gsi.go.jp/xyz/relief/{z}/{x}/{y}.png
-//数値地図25000（土地条件）URL：https://cyberjapandata.gsi.go.jp/xyz/lcm25k_2012/{z}/{x}/{y}.png
-//20万分1土地利用図（1982～1983年）URL：https://cyberjapandata.gsi.go.jp/xyz/lum200k/{z}/{x}/{y}.png
-//全国最新写真（シームレス）URL：https://cyberjapandata.gsi.go.jp/xyz/seamlessphoto/{z}/{x}/{y}.jpg
+Nendai = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/ort_old10/{z}/{x}/{y}.png', {
+      maxZoom: 16, opacity: 0.7, attribution: '地理院タイル（陰影起伏図）'
+    });
 
     // 注記（地名ラベル）— 航空写真や色別標高図の上に重ねると便利
     const gsiLabel = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/label/{z}/{x}/{y}.png', {
@@ -115,12 +96,11 @@ const favorite_gsi_map3 = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/gazo
 
     // オーバーレイのグループを定義
     const overlays = {
-      "注記（地名ラベル）": gsiLabel,     
       "陰影起伏図（重ねがけ）": gsiHillshade,
-     
-      "色別標高図（重ねがけ）": favorite_gsi_map,
-　　　"全国最新写真（シームレス）（重ねがけ）": favorite_gsi_map2, 
-      "1970年代空中写真（重ねがけ）": favorite_gsi_map3　
+	"標高地図": Hyoko,
+	"植生図": Syokusei,
+	"1961年から1969年の空中写真": Nendai,
+      "注記（地名ラベル）": gsiLabel
     };
 
     // レイヤーコントロールを追加
@@ -166,133 +146,6 @@ const favorite_gsi_map3 = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/gazo
 
     addEventListener('orientationchange', () => setTimeout(() => map.invalidateSize(), 250));
     addEventListener('resize', () => setTimeout(() => map.invalidateSize(), 250));
-  var myPoints = {
-    "type": "FeatureCollection",
-    "features": [
-      {
-        "type": "Feature",
-        "properties": {
-          "popupContent": "<p>南砺市利賀市民センター</p>"
-        },
-        "geometry": {
-          "type": "Point",
-          "coordinates": [137.0262, 36.4575]
-        }
-      },{
-        "type": "Feature",
-        "properties": {
-          "popupContent": "<p>瞑想の郷</p>"
-        },
-        "geometry": {
-          "type": "Point",
-          "coordinates": [137.0157, 36.4345]
-        }
-      },{
-        "type": "Feature",
-        "properties": {
-          "popupContent": "<p>利賀国際キャンプ場グルメ館</p>"
-        },
-        "geometry": {
-          "type": "Point",
-          "coordinates": [137.0405, 36.4405]
-        }
-      },{
-        "type": "Feature",
-        "properties": {
-          "popupContent": "<p>富山県利賀芸術公園</p>"
-        },
-        "geometry": {
-          "type": "Point",
-          "coordinates": [137.0428, 36.4327]
-        }
-      },{
-        "type": "Feature",
-        "properties": {
-          "popupContent": "<p>そばの郷</p>"
-        },
-        "geometry": {
-          "type": "Point",
-          "coordinates": [137.0044, 36.4212]
-        }
-      },{
-        "type": "Feature",
-        "properties": {
-          "popupContent": "<p>南砺市立複合教育施設「アーパス」</p>"
-        },
-        "geometry": {
-          "type": "Point",
-          "coordinates": [137.0296, 36.4561]
-        }
-      },{
-        "type": "Feature",
-        "properties": {
-          "popupContent": "<p>スターフォレスト利賀</p>"
-        },
-        "geometry": {
-          "type": "Point",
-          "coordinates": [137.0057, 36.4306]
-        }
-      },{
-        "type": "Feature",
-        "properties": {
-          "popupContent": "<p>利賀川の砂防・遊砂地</p>"
-        },
-        "geometry": {
-          "type": "Point",
-          "coordinates": [137.0053, 36.4305]
-        }
-      },{
-        "type": "Feature",
-        "properties": {
-          "popupContent": "<p>慶應義塾大学三田キャンパス</p>"
-        },
-        "geometry": {
-          "type": "Point",
-          "coordinates": [139.7424, 35.6513]
-        }
-      },{
-        "type": "Feature",
-        "properties": {
-          "popupContent": "<p>武蔵野市役所</p>"
-        },
-        "geometry": {
-          "type": "Point",
-          "coordinates": [139.5655, 35.7193]
-        }
-      },{
-        "type": "Feature",
-        "properties": {
-          "popupContent": "<p>大韓民国平昌郡</p>"
-        },
-        "geometry": {
-          "type": "Point",
-          "coordinates": [128.3943, 37.3832]
-        }
-      },{
-        "type": "Feature",
-        "properties": {
-          "popupContent": "<p>ギリシャデルフィ市</p>"
-        },
-        "geometry": {
-          "type": "Point",
-          "coordinates": [22.5005, 38.5069]
-        }
-      }
-    ]
-  };
- 
-  L.geoJSON(myPoints,
-    {
-      onEachFeature: function onEachFeature(
-        feature,
-        layer
-      ){
-        if(feature.properties && feature.properties.popupContent){
-          layer.bindPopup(feature.properties.popupContent);
-        }
-      }
-    }
-  ).addTo(map);
   </script>
 </body>
 </html>
