@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -27,7 +28,7 @@
   <script>
     // --- 既定値（パラメータが無いとき用） ---
     // 最初の位置を指定してください
-    const ini = { lat: 36.43645, lng: 136.63061, zoom: 15 };
+    const ini = { lat: 36.50839, lng: 136.59878, zoom: 15 };
     // URLパラメータで上書き: ?y=<lat>&x=<lng>&z=<zoom>
     (function applyUrlCenter() {
       const p = new URLSearchParams(location.search);
@@ -70,43 +71,22 @@
     };
 
     // ==== オーバーレイ（重ねると表現が変わって面白い） ====
-    // 陰影起伏図（地形の陰影）
-    const gsiHillshade = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/hillshademap/{z}/{x}/{y}.png', {
+    // 1961年～1969年（地形の陰影）
+    const gsiHillshade = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/ort_old10/{z}/{x}/{y}.png', {
       maxZoom: 16, opacity: 0.7, attribution: '地理院タイル（陰影起伏図）'
     });
 
-    // 1945th photo
-    extmap = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/ort_USA10/{z}/{x}/{y}.png', {
-      maxZoom: 16, opacity: 0.7, attribution: '地理院タイル（陰影起伏図）'
-    });
-
-    // 注記（地名ラベル）— 航空写真や色別標高図の上に重ねると便利
-    const gsiLabel = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/label/{z}/{x}/{y}.png', {
+    // 傾斜量— 航空写真や色別標高図の上に重ねると便利
+    const gsiLabel = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/slopemap/{z}/{x}/{y}.png', {
       maxZoom: 18, opacity: 0.9, attribution: '地理院タイル（注記）'
     });
 
-    // color map
-    colormap = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/relief/{z}/{x}/{y}.png', {
-      maxZoom: 16, opacity: 0.7, attribution: '地理院タイル（陰影起伏図）'
-    });
 
-    // katudansou
-    katudan = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/afm/{z}/{x}/{y}.png', {
-      maxZoom: 16, opacity: 0.7, attribution: '地理院タイル（陰影起伏図）'
-    });
-
- // tochijyouken
-    tochijyouken = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/lcm25k/{z}/{x}/{y}.png', {
-      maxZoom: 16, opacity: 0.7, attribution: '地理院タイル（陰影起伏図）'
-    });
 
     // オーバーレイのグループを定義
     const overlays = {
-      "外部地図（重ねがけ）": gsiHillshade,
-　　　"1945年代（重ねがけ）": extmap,
-      "色別標高図": colormap,
-      "活断層図": katudan,
-      "土地条件図": tochijyouken,
+      "1961年～1969年": gsiHillshade,
+      "傾斜量": gsiLabel
     };
 
     // レイヤーコントロールを追加
@@ -152,94 +132,6 @@
 
     addEventListener('orientationchange', () => setTimeout(() => map.invalidateSize(), 250));
     addEventListener('resize', () => setTimeout(() => map.invalidateSize(), 250));
- var myPoints = {
-    "type": "FeatureCollection",
-    "features": [
-      {
-        "type": "Feature",
-        "properties": {
-          "popupContent": "<p>しらやまさん：コニワ</p>"
-        },
-        "geometry": {
-          "type": "Point",
-          "coordinates": [136.63061, 36.43645]
-        }
-      },
-      {
-        "type": "Feature",
-        "properties": {
-          "popupContent": "<p>鳥越：アイヌ</p>"
-        },
-        "geometry": {
-          "type": "Point",
-          "coordinates": [136.61280, 36.37070]
-        }
-      },
-       {
-        "type": "Feature",
-        "properties": {
-          "popupContent": "<p>瀬女：コニワ</p>"
-        },
-        "geometry": {
-          "type": "Point",
-          "coordinates": [136.65218, 36.29107]
-        }
-      },
-       {
-        "type": "Feature",
-        "properties": {
-          "popupContent": "<p>柴垣：イカリモン・ハラビロ</p>"
-        },
-        "geometry": {
-          "type": "Point",
-          "coordinates": [136.76122, 36.99758]
-        }
-      },
-       {
-        "type": "Feature",
-        "properties": {
-          "popupContent": "<p>手取フィッシュランド横：エリザ</p>"
-        },
-        "geometry": {
-          "type": "Point",
-          "coordinates": [136.51023, 36.46425]
-        }
-      },
-       {
-        "type": "Feature",
-        "properties": {
-          "popupContent": "<p>瀬木野：コニワ</p>"
-        },
-        "geometry": {
-          "type": "Point",
-          "coordinates": [136.62264, 36.40062]
-        }
-      },
-      {
-        "type": "Feature",
-        "properties": {
-          "popupContent": "<p>瀬木野：エリザ</p>"
-        },
-        "geometry": {
-          "type": "Point",
-          "coordinates": [136.62318, 36.40101]
-        }
-      }
-    ]
-  };
- 
-  L.geoJSON(myPoints,
-    {
-      onEachFeature: function onEachFeature(
-        feature,
-        layer
-      ){
-        if(feature.properties && feature.properties.popupContent){
-          layer.bindPopup(feature.properties.popupContent);
-        }
-      }
-    }
-  ).addTo(map);
- </script>
+  </script>
 </body>
 </html>

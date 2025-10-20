@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -28,14 +27,16 @@
   <script>
     // --- 既定値（パラメータが無いとき用） ---
     // 最初の位置を指定してください
-    const ini = { lat: 36.50839, lng: 136.59878, zoom: 15 };
+    const ini = { lat: 36.81686111
+, lng: 136.7776111
+, zoom: 10 };
     // URLパラメータで上書き: ?y=<lat>&x=<lng>&z=<zoom>
     (function applyUrlCenter() {
       const p = new URLSearchParams(location.search);
       const y = parseFloat(p.get('y'));   // 緯度
       const x = parseFloat(p.get('x'));   // 経度
       const z = parseInt(p.get('z'), 10); // ズーム
-      if (Number.isFinite(y) && y >= -90 && y <= 90 &&
+      if (Number.isFiniteYes && y >= -90 && y <= 90 &&
           Number.isFinite(x) && x >= -180 && x <= 180) {
         ini.lat = y; ini.lng = x;
       }
@@ -58,7 +59,7 @@
     // 地理院地図のアドレスを指定
     const lyrGSI = L.tileLayer(
       "https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png", {
-        attribution: "<a href='https://maps.gsi.go.jp/development/ichiran.html' target='_blank'>地理院タイル</a>" 
+        attribution: "<a href='https://maps.gsi.go.jp/development/ichiran.html' target='_blank'>地理院タイル</a>"
     }).addTo(map);
 
     // Google 高解像度のアドレスを指定
@@ -71,13 +72,20 @@
     };
 
     // ==== オーバーレイ（重ねると表現が変わって面白い） ====
-    // 1961年～1969年（地形の陰影）
-    const gsiHillshade = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/ort_old10/{z}/{x}/{y}.png', {
+    // 陰影起伏図（地形の陰影）
+    const gsiHillshade = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/hillshademap/{z}/{x}/{y}.png', {
       maxZoom: 16, opacity: 0.7, attribution: '地理院タイル（陰影起伏図）'
     });
 
-    // 傾斜量— 航空写真や色別標高図の上に重ねると便利
-    const gsiLabel = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/slopemap/{z}/{x}/{y}.png', {
+    // ==== オーバーレイ（重ねると表現が変わって面白い） ====
+    // 1960年代の写真
+    const ort1960th = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/ort_old10/{z}/{x}/{y}.png', {
+      maxZoom: 16, opacity: 1, attribution: '地理院タイル（1960年代写真）'
+    });
+
+
+    // 注記（地名ラベル）— 航空写真や色別標高図の上に重ねると便利
+    const gsiLabel = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/label/{z}/{x}/{y}.png', {
       maxZoom: 18, opacity: 0.9, attribution: '地理院タイル（注記）'
     });
 
@@ -85,8 +93,9 @@
 
     // オーバーレイのグループを定義
     const overlays = {
-      "1961年～1969年": gsiHillshade,
-      "傾斜量": gsiLabel
+      "陰影起伏図（重ねがけ）": gsiHillshade,
+      "1960年代写真": ort1960th,
+      "注記（地名ラベル）": gsiLabel
     };
 
     // レイヤーコントロールを追加
@@ -132,6 +141,64 @@
 
     addEventListener('orientationchange', () => setTimeout(() => map.invalidateSize(), 250));
     addEventListener('resize', () => setTimeout(() => map.invalidateSize(), 250));
-  </script>
+
+    // ポイントを表示するスクリプト
+    // ここからを追加
+var myPoints = {
+    "type": "FeatureCollection",
+    "features": [
+      {
+        "type": "Feature",
+        "properties": {
+          "popupContent": "<p>中谷内池</p>"
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [136.7776111
+, 36.81686111
+]
+        }
+      },{
+        "type": "Feature",
+        "properties": {
+          "popupContent": "<p>和田ノ堤</p>"
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [137.0941944
+, 37.41375
+]
+        }
+      },
+{
+        "type": "Feature",
+        "properties": {
+          "popupContent": "<p>木戸口高池</p>"
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [137.1326388
+, 37.4560833
+]
+        }
+      }
+    ]
+  };
+ 
+  L.geoJSON(myPoints,
+    {
+      onEachFeature: function onEachFeature(
+        feature,
+        layer
+      ){
+        if(feature.properties && feature.properties.popupContent){
+          layer.bindPopup(feature.properties.popupContent);
+        }
+      }
+    }
+  ).addTo(map);
+    // ポイントを表示するスクリプト
+    // ここまでを追加
+</script>
 </body>
 </html>
