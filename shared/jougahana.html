@@ -102,7 +102,16 @@
       maxZoom: 18, opacity: 1, attribution: '地理院タイル'
     });
 
+    // ドローンオルソ2025/6/6撮影
     const tengai_250606 = L.tileLayer('./tilemaps/tengaiyama250606/{z}/{x}/{y}.png', {
+      maxZoom: 19, opacity: 1, attribution: '城ケ端自作'});
+
+    //　地震前後の地形変化
+    const difdemeq = L.tileLayer('./tilemaps/tengai_difdemeq/{z}/{x}/{y}.png', {
+      maxZoom: 18, opacity: 1, attribution: '城ケ端自作'});
+
+    // 豪雨前後の地形変化
+    const difdemst = L.tileLayer('./tilemaps/tengai_difdemst/{z}/{x}/{y}.png', {
       maxZoom: 18, opacity: 1, attribution: '城ケ端自作'});
 
     // 注記（地名ラベル）— 航空写真や色別標高図の上に重ねると便利
@@ -117,6 +126,8 @@
       "地震後空中写真":afeqortho,
       "豪雨後空中写真":afstortho,
       "ドローン写真": tengai_250606,
+      "地震前後の地形変化": difdemeq,
+      "豪雨前後の地形変化": difdemst,
       "注記（地名ラベル）": gsiLabel
     };
 
