@@ -117,9 +117,44 @@
       attribution: '自作傾斜タイル'
     });
 
+    // ---- Overlays（空の GeoJSON レイヤを用意）----
+    const jsonHoukai = L.geoJSON(null, {
+      pointToLayer: (feature, latlng) => L.circleMarker(latlng, {
+        radius: 5, weight: 1, color: '#b22222', fillColor: '#ff6666', fillOpacity: 0.7
+      }),
+      style: () => ({ color: '#b22222', weight: 2, fillOpacity: 0.3 }),
+      onEachFeature: (feature, layer) => {
+        const p = feature.properties || {};
+        const html = [
+          p.name ? `<div><strong>${p.name}</strong></div>` : '',
+          p.type ? `<div>種別: ${p.type}</div>` : '',
+          p.date ? `<div>日付: ${p.date}</div>` : ''
+        ].join('');
+        if (html) layer.bindPopup(html);
+      }
+    });
+
+    const jsonJisuberi = L.geoJSON(null, {
+      pointToLayer: (feature, latlng) => L.circleMarker(latlng, {
+        radius: 5, weight: 1, color: '#ff7f50', fillColor: '#ff7f50', fillOpacity: 0.7
+      }),
+      style: () => ({ color: '#ff7f50', weight: 2, fillOpacity: 0.3 }),
+      onEachFeature: (feature, layer) => {
+        const p = feature.properties || {};
+        const html = [
+          p.name ? `<div><strong>${p.name}</strong></div>` : '',
+          p.type ? `<div>種別: ${p.type}</div>` : '',
+          p.date ? `<div>日付: ${p.date}</div>` : ''
+        ].join('');
+        if (html) layer.bindPopup(html);
+      }
+    });
+
     // オーバーレイのグループを定義
     const overlays = {
       "陰影起伏図（重ねがけ）": gsiHillshade,
+      "地震後崩壊": jsonHoukai,
+      "地震後地すべり": jsonJisuberi,
       "1960年代写真": ort1960th,
       "地震後空中写真":ort2024th,
       "産総研5万分の1地質図":geol,
@@ -130,6 +165,16 @@
 
     L.control.layers(baseMaps, overlays, { collapsed: true, position: 'topright' }).addTo(map);
 
+    // ---- GeoJSON の読み込み ----
+    // ※ 初期表示からONにしたい場合は、読み込み後に addTo(map) する
+    //    さらに全体へ寄せたい場合は fitBounds する
+    Promise.all([
+      fetch('./src/geojson/houkai_machino.geojson').then(r => r.json()).then(g => { jsonHoukai.addData(g); }),
+      fetch('./src/geojson/jisuberi_machino.geojson').then(r => r.json()).then(g => { jsonJisuberi.addData(g); }),
+    ]).then(() => {
+    }).catch(err => {
+      console.error('GeoJSON 読み込みエラー:', err);
+    });
 
     // ======== 現在地表示（GPS）機能 ========
     let locateMarker = null, locateCircle = null;
