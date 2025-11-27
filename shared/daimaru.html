@@ -87,11 +87,18 @@
       maxZoom: 18, opacity: 0.9, attribution: '地理院タイル（注記）'
     });
 
-
+    // 能登半島・門前地区の傾斜タイル（自作 XYZ）
+    const slopeTile = L.tileLayer('./tilemaps/slope/{z}/{x}/{y}.png', {
+      minZoom: 12,
+      maxZoom: 16,
+      opacity: 0.8,
+      attribution: '自作傾斜タイル'
+    });
 
     // オーバーレイのグループを定義
     const overlays = {
       "陰影起伏図（重ねがけ）": gsiHillshade,
+      "門前地区傾斜": slopeTile,
       "1960年代写真": ort1960th,
       "注記（地名ラベル）": gsiLabel
     };
