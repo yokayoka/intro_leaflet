@@ -112,12 +112,47 @@
       attribution: '自作傾斜タイル'
     });
 
+    // ---- Overlays（空の GeoJSON レイヤを用意）----
+    const jsonHoukai = L.geoJSON(null, {
+      pointToLayer: (feature, latlng) => L.circleMarker(latlng, {
+        radius: 5, weight: 1, color: '#b22222', fillColor: '#ff6666', fillOpacity: 0.7
+      }),
+      style: () => ({ color: '#b22222', weight: 2, fillOpacity: 0.3 }),
+      onEachFeature: (feature, layer) => {
+        const p = feature.properties || {};
+        const html = [
+          p.name ? `<div><strong>${p.name}</strong></div>` : '',
+          p.type ? `<div>種別: ${p.type}</div>` : '',
+          p.date ? `<div>日付: ${p.date}</div>` : ''
+        ].join('');
+        if (html) layer.bindPopup(html);
+      }
+    });
+
+    const jsonJisuberi = L.geoJSON(null, {
+      pointToLayer: (feature, latlng) => L.circleMarker(latlng, {
+        radius: 5, weight: 1, color: '#ff7f50', fillColor: '#ff7f50', fillOpacity: 0.7
+      }),
+      style: () => ({ color: '#ff7f50', weight: 2, fillOpacity: 0.3 }),
+      onEachFeature: (feature, layer) => {
+        const p = feature.properties || {};
+        const html = [
+          p.name ? `<div><strong>${p.name}</strong></div>` : '',
+          p.type ? `<div>種別: ${p.type}</div>` : '',
+          p.date ? `<div>日付: ${p.date}</div>` : ''
+        ].join('');
+        if (html) layer.bindPopup(html);
+      }
+    });
+
     // オーバーレイのグループを定義
     const overlays = {
       "陰影起伏図（重ねがけ）": gsiHillshade,
       "門前地区傾斜": slopeTile,
-      "地震後空中写真（4月）":afOlso,
-      "豪雨後空中写真（9月）":afstOlso,
+      "地震後崩壊": jsonHoukai,
+      "地震後地すべり": jsonJisuberi,
+      "地震後空中写真 4月":afOlso,
+      "豪雨後空中写真 9月":afstOlso,
       "1960年代写真": ort1960th,
       "注記（地名ラベル）": gsiLabel
     };
@@ -125,6 +160,18 @@
     // レイヤーコントロールを追加
 
     L.control.layers(baseMaps, overlays, { collapsed: true, position: 'topright' }).addTo(map);
+
+    // ---- GeoJSON の読み込み ----
+    // ※ 初期表示からONにしたい場合は、読み込み後に addTo(map) する
+    //    さらに全体へ寄せたい場合は fitBounds する
+    Promise.all([
+      fetch('./src/geojson/houkai_monzen.geojson').then(r => r.json()).then(g => { jsonHoukai.addData(g); }),
+      fetch('./src/geojson/jisuberi_monzen.geojson').then(r => r.json()).then(g => { jsonJisuberi.addData(g); }),
+    ]).then(() => {
+    }).catch(err => {
+      console.error('GeoJSON 読み込みエラー:', err);
+    });
+
 
 
     // ======== 現在地表示（GPS）機能 ========
@@ -174,57 +221,13 @@ var myPoints = {
       {
         "type": "Feature",
         "properties": {
-          "popupContent": "<p>野々市駅</p>"
-        },
-        "geometry": {
-          "type": "Point",
-          "coordinates": [136.59813, 36.54193]
-        }
-      },
-      {
-        "type": "Feature",
-        "properties": {
-          "popupContent": "<p>金沢駅</p>"
-        },
-        "geometry": {
-          "type": "Point",
-          "coordinates": [136.64851, 36.57895]
-        }
-      },
-      {
-        "type": "Feature",
-        "properties": {
           "popupContent": "<p>サビヤ山</p>"
             },
         "geometry": {
           "type": "Point",
           "coordinates": [136.77449, 37.32538]
         }
-
-      },
-      {
-        "type": "Feature",
-        "properties": {
-          "popupContent": "<p>野々市駅のもっと東</p>"
-        },
-        "geometry": {
-          "type": "Point",
-          "coordinates": [136.5990, 36.54193]
-        }
-      },
-
-      {
-        "type": "Feature",
-        "properties": {
-          "popupContent": "<p>野々市駅の東もっと</p>"
-        },
-        "geometry": {
-          "type": "Point",
-          "coordinates": [136.59880, 36.54193]
-        }
-      },
-
-
+      } 
     ]
   };
   
