@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>能登半島マップ（レイヤー参照＋現在地表示・モバイル対応）</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
+
+  <style>
+    html, body { height: 100%; margin: 0; }
+    #map { height: 100dvh; width: 100%; }
+    .leaflet-touch .leaflet-bar a { width: 42px; height: 42px; line-height: 42px; font-size: 16px; }
+    .leaflet-top.leaflet-right { z-index: 1100; }
+    .leaflet-bottom.leaflet-right { z-index: 1100; }
+    .leaflet-control-locate.leaflet-bar a {
+      text-align: center; text-decoration: none; display: block;
+      font-size: 20px; line-height: 42px;
+    }
+    .leaflet-control-locate.leaflet-bar a:focus { outline: none; }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <script>
+    // --- 既定値（パラメータが無いとき用） ---
+    // 最初の位置を指定してください
+    const ini = { lat: 37.41865, lng: 137.06905, zoom: 14 };
+    // 37.418651159790656, 137.06905099923887
+    // URLパラメータで上書き: ?y=<lat>&x=<lng>&z=<zoom>
+    (function applyUrlCenter() {
+      const p = new URLSearchParams(location.search);
+      const y = parseFloat(p.get('y'));   // 緯度
+      const x = parseFloat(p.get('x'));   // 経度
+      const z = parseInt(p.get('z'), 10); // ズーム
+      if (Number.isFinite(y) && y >= -90 && y <= 90 &&
+          Number.isFinite(x) && x >= -180 && x <= 180) {
+        ini.lat = y; ini.lng = x;
+      }
+      if (Number.isFinite(z)) ini.zoom = Math.min(19, Math.max(4, z));
+    })();
+
+    // ---- 地図本体（※初期化は1回だけ）----
+    const map = L.map('map', {
+      center: [ini.lat, ini.lng],
+      zoom: ini.zoom,
+      zoomControl: false,
+      tap: true,
+      tapTolerance: 15
+    });
+
+    // ズームコントロール（＋／−）を右下に
+    L.control.zoom({ position: 'bottomright' }).addTo(map);
+
+    // ---- Base layers ----
+    // 地理院地図のアドレスを指定
+    const lyrGSI = L.tileLayer(
+      "https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png", {
+        attribution: "<a href='https://maps.gsi.go.jp/development/ichiran.html' target='_blank'>地理院タイル</a>" 
+    }).addTo(map);
+
+     // Google 高解像度のアドレスを指定
+     const lyrGoogleHybrid = L.tileLayer("https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}");
+
+     // 地震前のCS立体図
+     const bfcs = L.tileLayer("https://www2.ffpri.go.jp/soilmap/tile/cs_noto/{z}/{x}/{y}.png");
+
+     // 地震後のCS立体図
+     const afcs = L.tileLayer("https://rinya.geospatial.jp/tile/csmaptile_noto/{z}/{x}/{y}.png ");
+
+    // ベースマップのグループを定義
+    const baseMaps = {
+      "地理院地図": lyrGSI,
+      "地震前CS立体図":bfcs,
+      "地震後CS立体図":afcs,
+      "Google高解像度（地震前）": lyrGoogleHybrid,
+    };
+
+    // ==== オーバーレイ（重ねると表現が変わって面白い） ====
+    // 陰影起伏図（地形の陰影）
+    const gsiHillshade = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/hillshademap/{z}/{x}/{y}.png', {
+      maxZoom: 16, opacity: 0.7, attribution: '地理院タイル（陰影起伏図）'
+    });
+    
+    // ==== オーバーレイ（重ねると表現が変わって面白い） ====
+    // 1960年代の写真
+    const ort1960th = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/ort_old10/{z}/{x}/{y}.png', {
+      maxZoom: 16, opacity: 1, attribution: '地理院タイル（1960年代写真）'
+    });
+
+    // ==== オーバーレイ（重ねると表現が変わって面白い） ====
+    // 地震後の空中写真
+    const afeqortho = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/20240102noto_0405_0426do/{z}/{x}/{y}.png', {
+      maxZoom: 18, opacity: 1, attribution: '地理院タイル'
+    });
+
+    // ==== オーバーレイ（重ねると表現が変わって面白い） ====
+    // 豪雨後の空中写真
+    const afstortho = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/20240923rain_wajima_0923do_sokuho/{z}/{x}/{y}.png ', {
+      maxZoom: 18, opacity: 1, attribution: '地理院タイル'
+    });
+
+    const tengai_250606 = L.tileLayer('./tilemaps/tengaiyama250606/{z}/{x}/{y}.png', {
+      maxZoom: 18, opacity: 1, attribution: '城ケ端自作'});
+
+    // 注記（地名ラベル）— 航空写真や色別標高図の上に重ねると便利
+    const gsiLabel = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/label/{z}/{x}/{y}.png', {
+      maxZoom: 18, opacity: 0.9, attribution: '地理院タイル（注記）'
+    });
+
+    // オーバーレイのグループを定義
+    const overlays = {
+      "陰影起伏図（重ねがけ）": gsiHillshade,
+      "1960年代写真": ort1960th,
+      "地震後空中写真":afeqortho,
+      "豪雨後空中写真":afstortho,
+      "ドローン写真": tengai_250606,
+      "注記（地名ラベル）": gsiLabel
+    };
+
+    // レイヤーコントロールを追加
+
+    L.control.layers(baseMaps, overlays, { collapsed: true, position: 'topright' }).addTo(map);
+
+
+    // ======== 現在地表示（GPS）機能 ========
+    let locateMarker = null, locateCircle = null;
+    function showLocation(lat, lng, accuracy) {
+      const latlng = [lat, lng];
+      if (!locateMarker) locateMarker = L.marker(latlng, { title: "現在地" }).addTo(map);
+      else locateMarker.setLatLng(latlng);
+
+      if (!locateCircle) locateCircle = L.circle(latlng, { radius: accuracy || 30, color: '#136aec', fillColor: '#136aec', fillOpacity: 0.15, weight: 2 }).addTo(map);
+      else { locateCircle.setLatLng(latlng); if (accuracy) locateCircle.setRadius(accuracy); }
+
+      map.setView(latlng, Math.max(map.getZoom(), 15), { animate: true });
+    }
+    function locateOnce() {
+      if (!navigator.geolocation) { alert("この端末/ブラウザは位置情報に対応していません。"); return; }
+      navigator.geolocation.getCurrentPosition(
+        pos => showLocation(pos.coords.latitude, pos.coords.longitude, pos.coords.accuracy),
+        err => {
+          console.warn("Geolocation error:", err);
+          alert("位置情報の取得に失敗しました（権限/環境をご確認ください）。");
+        },
+        { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+      );
+    }
+    const LocateControl = L.Control.extend({
+      options: { position: 'bottomright' },
+      onAdd: function() {
+        const container = L.DomUtil.create('div', 'leaflet-control-locate leaflet-bar');
+        const link = L.DomUtil.create('a', '', container);
+        link.href = '#'; link.title = '現在地へ移動'; link.setAttribute('role', 'button'); link.setAttribute('aria-label', '現在地へ移動'); link.innerHTML = '📍';
+        L.DomEvent.disableClickPropagation(container);
+        L.DomEvent.on(link, 'click', (e) => { L.DomEvent.preventDefault(e); locateOnce(); });
+        return container;
+      }
+    });
+    map.addControl(new LocateControl());
+
+    addEventListener('orientationchange', () => setTimeout(() => map.invalidateSize(), 250));
+    addEventListener('resize', () => setTimeout(() => map.invalidateSize(), 250));
+
+    // ポイントを表示するスクリプト
+    // ここからを追加
+    // 37.418651159790656, 137.06905099923887
+var myPoints = {
+    "type": "FeatureCollection",
+    "features": [
+      {
+        "type": "Feature",
+        "properties": {
+          "popupContent": "<p>天笠山</p>"
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [137.06905,37.41865]
+        }
+      },
+
+
+    ]
+  };
+  
+  L.geoJSON(myPoints, 
+    {
+      onEachFeature: function onEachFeature(
+        feature,
+        layer
+      ){
+        if(feature.properties && feature.properties.popupContent){
+          layer.bindPopup(feature.properties.popupContent);
+        }
+      }
+    }
+  ).addTo(map);
+    // ポイントを表示するスクリプト
+    // ここまでを追加
+</script>
+</body>
+</html>
