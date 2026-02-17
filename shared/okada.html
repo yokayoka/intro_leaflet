@@ -27,7 +27,7 @@
   <script>
     // --- 既定値（パラメータが無いとき用） ---
     // 最初の位置を指定してください
-    const ini = { lat: 37.42540490, lng: 137.08874129, zoom: 13 };
+    const ini = { lat: 37.42762, lng: 137.10635, zoom: 15 };
     // 37.42540490591147, 137.08874129225353 町野町
     // URLパラメータで上書き: ?y=<lat>&x=<lng>&z=<zoom>
     (function applyUrlCenter() {
@@ -68,7 +68,7 @@
     const bfCS = L.tileLayer("https://www2.ffpri.go.jp/soilmap/tile/cs_noto/{z}/{x}/{y}.png");
 
      // 地震後CS立体図のアドレスを指定
-    const afCS = L.tileLayer("https://rinya.geospatial.jp/tile/csmaptile_noto/{z}/{x}/{y}.png");
+    const afCS = L.tileLayer("https://rinya.geospatial.jp/tile/csmaptile_noto/{z}/{x}/{y}.png").addTo(map);
 
 
     // ベースマップのグループを定義

@@ -27,7 +27,7 @@
   <script>
     // --- 既定値（パラメータが無いとき用） ---
     // 最初の位置を指定してください
-    const ini = { lat: 37.31749, lng: 136.75998, zoom: 14 };
+    const ini = { lat: 37.39857394953951, lng: 136.8909245253224, zoom: 16 };
     // URLパラメータで上書き: ?y=<lat>&x=<lng>&z=<zoom>
         // 37.30913,136.76222
     (function applyUrlCenter() {
@@ -68,7 +68,7 @@
     const bfCS = L.tileLayer("https://www2.ffpri.go.jp/soilmap/tile/cs_noto/{z}/{x}/{y}.png");
 
     // 地震後のCS立体図
-    const afCS = L.tileLayer("https://rinya.geospatial.jp/tile/csmaptile_noto/{z}/{x}/{y}.png"); 
+    const afCS = L.tileLayer("https://rinya.geospatial.jp/tile/csmaptile_noto/{z}/{x}/{y}.png").addTo(map); 
 
     // ベースマップのグループを定義
     const baseMaps = {
@@ -221,13 +221,23 @@ var myPoints = {
       {
         "type": "Feature",
         "properties": {
-          "popupContent": "<p>サビヤ山</p>"
+          "popupContent": "<p>鳳至山公園</p>"
             },
         "geometry": {
           "type": "Point",
-          "coordinates": [136.77449, 37.32538]
+          "coordinates": [136.896464, 37.400448]
         }
-      } 
+      } ,
+      {
+        "type": "Feature",
+        "properties": {
+          "popupContent": "<p>シアミ山</p>"
+            },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [136.878223, 37.394533]
+        }
+      }
     ]
   };
   
